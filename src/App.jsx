@@ -131,26 +131,29 @@ function TelaLista({ showToast }) {
 
   const startEdit = (u) => { setEditing(u.id); setEditForm({ ...u }); };
   const cancelEdit = () => { setEditing(null); setEditForm({}); };
-
+const validateUser = (users, user, editingId) => {
+  if (user.cpf.replace(/\D/g, "").length !== 11) {
+    return "CPF deve ter 11 dígitos.";
+  }
+  if (users.find((u) => u.cpf === user.cpf && u.id !== editingId)) {
+    return "CPF já cadastrado para outro usuário!";
+  }
+  if (user.idade < 1 || user.idade > 120) {
+    return "Idade deve ser entre 1 e 120.";
+  }
+  if (!/^[A-Za-zÀ-ÿ\s]+$/.test(user.nome) || user.nome.length < 3) {
+    return "Nome deve conter apenas letras e ter pelo menos 3 caracteres.";
+  }
+  user.cpf = formatCPF(user.cpf);
+  return null;
+}
 const saveEdit = () => {
-  const validate = (name, value) => validations[name]?.(value) || "";
-  if (editForm.cpf.replace(/\D/g, "").length !== 11) {
-    showToast("CPF deve ter 11 dígitos.", "error");
+  const error = validateUser(getUsers(), editForm, editing);
+  if (error){
+    showToast(error, "error");
     return;
   }
-  if (getUsers().find((u) => u.cpf === editForm.cpf && u.id !== editing)) {
-    showToast("CPF já cadastrado para outro usuário!", "error");
-    return;
-  }
-  if (editForm.idade < 1 || editForm.idade > 120) {
-    showToast("Idade deve ser entre 1 e 120.", "error");
-    return;
-  }
-  if (!/^[A-Za-zÀ-ÿ\s]+$/.test(editForm.nome) || editForm.nome.length < 3) {
-    showToast("Nome deve conter apenas letras e ter pelo menos 3 caracteres.", "error");
-    return;
-  }
-  editForm.cpf = formatCPF(editForm.cpf);
+
   const updated = getUsers().map((u) =>
     u.id === editing ? editForm : u
   );
@@ -256,7 +259,7 @@ function TelaCEP() {
   return (
     <>
       <h1 className="page-title">Consulta de CEP</h1>
-      <p className="page-sub">Digite o CEP e saia do campo — o endereço será preenchido via API (ViaCEP).</p>
+      <p className="page-sub">Digite o CEP e saia do campo — o endereço será preenchido via API.</p>
       <div className="card">
         <div className="cep-input-row">
           <div className="form-group" style={{ flex: 1 }}>
@@ -296,9 +299,9 @@ function TelaCEP() {
 function TelaSobre() {
   const concepts = [
     { title: "HTML Semântico", desc: "Uso de tags como <main>, <section>, <nav> e <article> para estruturar o conteúdo de forma acessível e significativa para navegadores e leitores de tela." },
-    { title: "Box Model", desc: "Toda elemento HTML é uma caixa com content, padding, border e margin. Compreender isso é essencial para controlar espaçamentos e tamanhos com CSS." },
-    { title: "Flexbox", desc: "Layout unidimensional (linhas ou colunas) ideal para alinhar e distribuir elementos dentro de um container de forma responsiva e flexível." },
-    { title: "CSS Grid", desc: "Layout bidimensional (linhas e colunas simultâneas) perfeito para tabelas, dashboards e qualquer estrutura de grade complexa." },
+    { title: "Box Model", desc: "Toda elemento HTML é uma caixa com content, padding, border e margin. Essencial para controlar espaçamentos e tamanhos com CSS." },
+    { title: "Flexbox", desc: "Layout unidimensional (linhas ou colunas) utilizado para alinhar e distribuir elementos dentro de um container de forma responsiva e flexível." },
+    { title: "CSS Grid", desc: "Layout bidimensional (linhas e colunas simultâneas) para tabelas, dashboards e qualquer estrutura de grade complexa." },
     { title: "Media Queries", desc: "Permitem aplicar estilos condicionais conforme o tamanho da tela, tornando o layout responsivo para mobile, tablet e desktop." },
     { title: "JavaScript", desc: "Linguagem que adiciona interatividade: validações em tempo real, manipulação do DOM, eventos e lógica de negócio no lado do cliente." },
     { title: "Fetch API", desc: "API nativa do navegador para fazer requisições HTTP assíncronas. Usada neste projeto para consultar endereços na API ViaCEP via GET." },
