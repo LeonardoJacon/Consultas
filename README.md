@@ -1,6 +1,6 @@
 # Sistema de Consultas
 
-Este projeto é uma aplicação web desenvolvida em React para gerenciamento de usuários, permitindo cadastro, edição e validação de dados de forma dinâmica no frontend.
+Este projeto é uma aplicação web desenvolvida em React para gerenciamento de usuários, permitindo cadastro, edição , uso de API assíncrona e validação de dados de forma dinâmica no frontend.
 
 ## Funcionalidades
 
@@ -9,7 +9,7 @@ Este projeto é uma aplicação web desenvolvida em React para gerenciamento de 
 - Validação de formulário em tempo real
 - Feedback visual com mensagens de erro e sucesso
 - Persistência de dados (localStorage)
-
+- API de CEP para preenchimento dos campos
 ## Validações implementadas
 
 - CPF deve conter exatamente 11 dígitos
